@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adventkalender Kato</title>
+<style>
+:root{color-scheme:dark;--bg:#0f2a24;--card:#17372f;--ink:#fdf3e1;--soft:#a9c2b5;--accent:#c8312f;--gold:#f2c14e;--lock:#173a31;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif;min-height:100%}
+main{max-width:640px;margin:0 auto;padding:32px 16px 48px}
+h1{font-size:clamp(28px,7vw,40px);text-align:center;margin:0 0 6px;font-weight:normal}
+.sub{text-align:center;color:var(--soft);margin:0 0 28px;font-style:italic}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(min-width:520px){.grid{grid-template-columns:repeat(5,1fr);gap:12px}}
+.door{aspect-ratio:1;border:2px solid var(--gold);border-radius:14px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .15s}
+.door b{font-size:clamp(20px,6vw,28px);font-weight:normal}
+.door small{font-size:11px;color:var(--soft)}
+.door.locked{background:var(--lock);border-color:transparent;color:var(--soft)}
+.door.ready{background:var(--accent);border-color:var(--gold);color:#fff;animation:glow 2s ease-in-out infinite}
+.door.ready small{color:#fff}
+.door.done{opacity:.75}
+.door.big{grid-column:span 2;aspect-ratio:auto;grid-column:1/-1;padding:18px;flex-direction:row;gap:12px}
+.door:active{transform:scale(.95)}
+.door.shake{animation:shake .4s}
+@keyframes glow{50%{box-shadow:0 0 14px var(--gold)}}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media(prefers-reduced-motion:reduce){.door{animation:none!important}}
+#m{position:fixed;inset:0;background:rgba(20,10,5,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:5}
+#m.on{display:flex}
+.box{background:var(--card);border-radius:18px;max-width:420px;width:100%;padding:28px 24px;text-align:center;border:2px solid var(--gold)}
+.box h2{margin:0 0 12px;font-weight:normal;color:var(--accent);font-size:22px}
+.box p{font-size:19px;line-height:1.55;margin:0 0 22px}
+.box button{font:inherit;background:var(--accent);color:#fff;border:0;border-radius:999px;padding:10px 26px;cursor:pointer}
+body{background:radial-gradient(ellipse at top,#1d4a3c 0,#0f2a24 55%,#08181a 100%) fixed;overflow-x:hidden}
+main{position:relative;z-index:2}
+h1{color:var(--gold);text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.tree{display:block;width:150px;margin:0 auto 8px;filter:drop-shadow(0 0 18px rgba(242,193,78,.3))}
+.l{animation:tw 1.6s ease-in-out infinite;animation-delay:var(--d)}
+@keyframes tw{50%{opacity:.2}}
+.star{transform-box:fill-box;transform-origin:center;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.25) rotate(10deg)}}
+#snow{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+#snow i{position:absolute;top:-10px;width:var(--s);height:var(--s);border-radius:50%;background:#fff;opacity:.8;animation:fall linear infinite}
+@keyframes fall{to{transform:translate(var(--x),105vh)}}
+.door{position:relative;overflow:hidden;border:0;color:#fff;background:#b3262d;box-shadow:0 4px 10px rgba(0,0,0,.35)}
+.door:nth-child(2n){background:#1e7a4a}
+.door:nth-child(3n){--rb:#fdf3e1}
+.door::before,.door::after{content:"";position:absolute;background:var(--rb,var(--gold));opacity:.9}
+.door::before{top:0;bottom:0;left:50%;width:14%;transform:translateX(-50%)}
+.door::after{left:0;right:0;top:50%;height:14%;transform:translateY(-50%)}
+.door b{position:relative;z-index:1;display:grid;place-items:center;width:1.9em;height:1.9em;border-radius:50%;background:#fdf3e1;color:#8f1f2b;font-size:clamp(15px,4.5vw,20px);box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.door small{position:absolute;bottom:5px;left:0;right:0;text-align:center;z-index:1;color:#fff;font-size:10px;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.door.locked{color:#fff;filter:saturate(.3) brightness(.55)}
+.door.ready{animation:glow 2s ease-in-out infinite,wig 3.5s ease-in-out infinite}
+@keyframes wig{0%,88%,100%{rotate:0deg}92%{rotate:-5deg}96%{rotate:5deg}}
+.door.big{background:linear-gradient(135deg,#b3262d,#d9962a)}
+.door.big small{position:static;font-size:13px}
+#m.on .box{animation:pop .35s ease-out}
+@keyframes pop{from{transform:scale(.7);opacity:0}}
+.cf{position:fixed;z-index:6;top:35%;left:50%;width:8px;height:12px;pointer-events:none;animation:burst 1.4s ease-out forwards}
+@keyframes burst{to{transform:translate(var(--dx),var(--dy)) rotate(540deg);opacity:0}}
+@media(prefers-reduced-motion:reduce){.l,.star,#snow i,.box,.cf,.door{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="snow"></div>
+<main>
+<svg class="tree" viewBox="0 0 200 232" aria-hidden="true">
+<polygon points="100,30 150,100 50,100" fill="#1e7a4a"/><polygon points="100,65 165,150 35,150" fill="#25915a"/><polygon points="100,105 180,200 20,200" fill="#1e7a4a"/><rect x="88" y="200" width="24" height="28" fill="#6b4226"/>
+<polygon class="star" points="100,4 106,22 125,22 110,33 116,51 100,40 84,51 90,33 75,22 94,22" fill="#f2c14e"/>
+<circle class="l" style="--d:0s" cx="100" cy="62" r="5" fill="#ff5a5a"/><circle class="l" style="--d:.4s" cx="78" cy="90" r="5" fill="#f2c14e"/><circle class="l" style="--d:.8s" cx="124" cy="88" r="5" fill="#7ec8ff"/>
+<circle class="l" style="--d:.2s" cx="100" cy="104" r="5" fill="#fff"/><circle class="l" style="--d:.6s" cx="70" cy="132" r="5" fill="#ff5a5a"/><circle class="l" style="--d:1s" cx="130" cy="130" r="5" fill="#f2c14e"/><circle class="l" style="--d:.3s" cx="52" cy="146" r="5" fill="#7ec8ff"/><circle class="l" style="--d:.9s" cx="148" cy="144" r="5" fill="#fff"/>
+<circle class="l" style="--d:.5s" cx="100" cy="150" r="5" fill="#f2c14e"/><circle class="l" style="--d:.1s" cx="68" cy="176" r="5" fill="#ff5a5a"/><circle class="l" style="--d:.7s" cx="132" cy="174" r="5" fill="#7ec8ff"/><circle class="l" style="--d:1.1s" cx="42" cy="192" r="5" fill="#fff"/><circle class="l" style="--d:.25s" cx="158" cy="190" r="5" fill="#f2c14e"/><circle class="l" style="--d:.65s" cx="100" cy="192" r="5" fill="#ff5a5a"/>
+</svg>
+<h1>Een adventkalender voor Katotje</h1>
+<p class="sub">Elke dag om 15u gaat er een deurtje open, en op 25 december om middernacht</p>
+<div class="grid" id="g"></div>
+</main>
+<div id="m"><div class="box"><h2 id="mt"></h2><p id="mp"></p><button id="mc">Gesnapt</button></div></div>
+<script>
+var Y=2026;
+var T=[
+"We beginnen simpel: je bent geweldig",
+"Je bent zoooo mooi To’tje",
+"Je bent de enige met wie ik een toekomst wil.",
+"Je bent de mooiste persoon die er bestaat.",
+"Ik vind het geweldig hoe we samen gek kunnen doen",
+"M’n familie houdt van je ♥ (net zoals ik)",
+"Jouw lach is het mooiste wat er is.",
+"Jouw ogen zijn zooooo mooi To",
+"Alles aan jou is schattig, snoesje",
+"Je bent geweldigggg",
+"Ik hou ervan hoe je mijn gedachten altijd kan lezen.",
+"Je bent m’n forever and always",
+"Wanneer nog eens een potje Fortnite?",
+"Je maakt me een betere persoon, To",
+"Jij bent mijn favoriete persoon. Punt.",
+"Je maakt me de gelukkigste jongen ooit. ♥",
+"IK HOU MEER VAN JOU KATO",
+"Je maakt elke dag mooier, liefje ♥",
+"Ik hou alleeeeeen van jou Kato",
+"Dankjewel voor alles en alvast bedankt voor alles wat nog gaat volgen (tot we sterven :) )",
+"De kortste dag van het jaar, maar toch is de dag perfect want jij bent m’n vriendin",
+"Je laat me uitkijken naar elke nieuwe dag, To",
+"Niemand gaat me OOIT zo gelukkig maken als jij dat doet en niemand anders mag dat doen want ik wil jou voor altijd ♥",
+"Fijne kerstavond, liefje. Ik hou suuuupeer veel van jou ♥ En om middernacht wacht er nog één…",
+"Fijne kerst aan de allerbeste vriendin ooit. Ik hoop dat we vandaag samen zijn en dat je een hele fijne en onvergetelijke kerst hebt. Als het aan mij ligt, vieren we nog heel veel kerstmissen samen ♥"
+];
+var MAANDEN="december";
+function at(d){return d===25?new Date(Y,11,25,0,0):new Date(Y,11,d,15,0)}
+var preview=location.hash==="#preview";
+var seen={};
+try{seen=JSON.parse(localStorage.getItem("adv")||"{}")}catch(e){}
+function save(){try{localStorage.setItem("adv",JSON.stringify(seen))}catch(e){}}
+function label(d){return d===25?"25 december om 00:00":d+" december om 15u"}
+var g=document.getElementById("g");
+function render(){
+  var now=new Date();g.innerHTML="";
+  for(var d=1;d<=25;d++){(function(d){
+    var open=preview||now>=at(d);
+    var b=document.createElement("button");
+    b.className="door"+(d===25?" big":"")+(open?(seen[d]?" done":" ready"):" locked");
+    b.innerHTML="<b>"+d+"</b><small>"+(open?(seen[d]?"♥":"open me"):"nog even")+"</small>";
+    b.onclick=function(){
+      if(open){seen[d]=1;save();show("Dag "+d,T[d-1]);boom();render()}
+      else{b.classList.add("shake");setTimeout(function(){b.classList.remove("shake")},400);
+        show("Nog even geduld ♥","Dit deurtje gaat open op "+label(d)+".")}
+    };
+    g.appendChild(b);
+  })(d)}
+}
+var m=document.getElementById("m");
+function show(t,p){document.getElementById("mt").textContent=t;document.getElementById("mp").textContent=p;m.classList.add("on")}
+document.getElementById("mc").onclick=function(){m.classList.remove("on")};
+m.onclick=function(e){if(e.target===m)m.classList.remove("on")};
+document.onkeydown=function(e){if(e.key==="Escape")m.classList.remove("on")};
+var sn=document.getElementById("snow");
+for(var i=0;i<45;i++){var s=document.createElement("i");s.style.cssText="left:"+Math.random()*100+"%;--s:"+(3+Math.random()*5)+"px;--x:"+(Math.random()*60-30)+"px;animation-duration:"+(7+Math.random()*10)+"s;animation-delay:-"+Math.random()*12+"s";sn.appendChild(s)}
+function boom(){var c=["#f2c14e","#ff5a5a","#fdf3e1","#3fbf7f","#7ec8ff"];
+for(var i=0;i<30;i++){var e=document.createElement("i");e.className="cf";e.style.background=c[i%5];e.style.setProperty("--dx",(Math.random()*400-200)+"px");e.style.setProperty("--dy",(150+Math.random()*350)+"px");document.body.appendChild(e);setTimeout(function(x){x.remove()},1500,e)}}
+render();setInterval(render,30000);
+</script>
+</body>
+</html>
